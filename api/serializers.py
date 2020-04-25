@@ -23,7 +23,7 @@ class CategorySerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class Order(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
