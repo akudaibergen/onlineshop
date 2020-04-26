@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from api.models import Category, Product
 from django.http import JsonResponse
 import sqlite3
-from api.serializers import ProductSerializer, CategorySerializer, UserSerializer
+from api.serializers import ProductSerializer, CategorySerializer, UserSerializer,UserSerializer2
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -195,7 +195,7 @@ def getUserByName(request,name):
     except User.DoesNotExist as e:
         return JsonResponse({'error': str(e)})
     if request.method == 'GET':
-        serializer = UserSerializer(user)
+        serializer = UserSerializer2(user)
         return Response(serializer.data)
 
 

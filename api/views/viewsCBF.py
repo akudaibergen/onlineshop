@@ -1,5 +1,6 @@
 from api.models import Category, Product,Order
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 from api.serializers import ProductSerializer, CategorySerializer,OrderSerializer, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -17,6 +18,8 @@ class CategoryList(generics.ListCreateAPIView):
 class OrderList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
+
 
 
 class UserViewSet(generics.ListCreateAPIView):
