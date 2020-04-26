@@ -3,7 +3,6 @@ from api.views import views
 from api.views.viewsCBF import CategoryList, OrderList
 
 urlpatterns = [
-    # path('login/', obtain_jwt_token),
     path('category/', CategoryList.as_view()),
     path('products/', views.products_list, name="products"),
     path('products/<int:product_id>', views.product_detail),
