@@ -55,7 +55,7 @@ def login_page(request):
 
             if user is not None:
                 login(request, user)
-                # return redirect('register')
+                return redirect('products')
             else:
                 messages.info(request, 'Username or password is incorrect')
 
