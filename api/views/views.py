@@ -1,22 +1,14 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-
+from django.contrib.auth.models import User
 from api.models import Category, Product
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 import sqlite3
-from sqlite3 import Error
-import requests
-
-from api.serializers import ProductSerializer, CategorySerializer
-
+from api.serializers import ProductSerializer, CategorySerializer, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
 from rest_framework.views import APIView
-
 from rest_framework.permissions import IsAuthenticated
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -26,10 +18,9 @@ from django.contrib.auth.decorators import login_required
 
 def register_page(request):
     if request.user.is_authenticated:
-        return redirect('products')
+        return ()
     else:
         form = UserCreationForm()
-
         if request.method == 'POST':
             form = UserCreationForm(request.POST)
             if form.is_valid():
@@ -196,6 +187,16 @@ def by_category_detail(request, ctg, product_id):
 
     if request.method == 'GET':
         return JsonResponse(products.to_json())
+
+@api_view(['GET'])
+def getUserByName(request,name):
+    try:
+        user = User.objects.get(username=name)
+    except User.DoesNotExist as e:
+        return JsonResponse({'error': str(e)})
+    if request.method == 'GET':
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 class CategoryList(APIView):

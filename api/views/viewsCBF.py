@@ -1,11 +1,11 @@
 from api.models import Category, Product,Order
-from django.http import JsonResponse
-import sqlite3
-from api.serializers import ProductSerializer, CategorySerializer,OrderSerializer
+from django.contrib.auth.models import User
+from api.serializers import ProductSerializer, CategorySerializer,OrderSerializer, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status,generics
 from rest_framework.views import APIView
+from rest_framework import viewsets
 
 
 class CategoryList(generics.ListCreateAPIView):
@@ -13,6 +13,13 @@ class CategoryList(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
     # permission_classes = (IsAuthenticated,)
 
+
 class OrderList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+
+class UserViewSet(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from api.models import Category, Product, Order
 
 
@@ -23,8 +24,23 @@ class CategorySerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class OrderSerializer(serializers.ModelSerializer):
 
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'owner', 'date', 'status', 'products')
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+class UserSerializer2(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
