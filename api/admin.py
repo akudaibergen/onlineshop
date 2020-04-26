@@ -12,6 +12,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'price', 'image', 'color', 'size', 'category')
 
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     pass

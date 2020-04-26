@@ -1,18 +1,76 @@
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
 from api.models import Category, Product
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import sqlite3
+from sqlite3 import Error
+import requests
+
 from api.serializers import ProductSerializer, CategorySerializer
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+
 from rest_framework.views import APIView
 
+from rest_framework.permissions import IsAuthenticated
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
+def register_page(request):
+    if request.user.is_authenticated:
+        return redirect('products')
+    else:
+        form = UserCreationForm()
+
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                name = form.cleaned_data.get('username')
+                messages.success(request, 'Welcome to us, '+name+'!')
+
+                return redirect('login')
+
+        context = {"form": form}
+        return render(request, 'accounts/registration.html', context)
+
+
+def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('products')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('products')
+            else:
+                messages.info(request, 'Username or password is incorrect')
+
+        context = {}
+        return render(request, 'accounts/login.html', context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('products')
+
+
+# @login_required(login_url='login')
 @api_view(['GET', 'POST'])
 def products_list(request):
-    # filter_backends = (DjangoFilterBackend,)
-    # filter_class = ProductFilter
     if request.method == 'GET':
         vacancies = Product.objects.all()
         serializer = ProductSerializer(vacancies, many=True)
